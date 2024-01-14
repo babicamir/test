@@ -6,7 +6,7 @@ DEFAULT_SAPSYSTEM_URI_NAME=SAPSYSTEM_URI_T01
 DEFAULT_SAPSYSTEM_URI_VALUE=http://bti1121.bti.local.com:8020
 DEFAULT_SSL_VALIDITY=365 # in months
 KEY_NAME="private.key"
-CERTIFICATE_NAME="certificate.pem"
+CERTIFICATE_NAME="certificate.crt"
 
 # Intro message
 echo "Welcome to Active Control Web Platform Setup."
