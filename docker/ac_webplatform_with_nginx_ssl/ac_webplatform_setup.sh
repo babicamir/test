@@ -38,10 +38,10 @@ SSL_VALIDITY=${SSL_VALIDITY:-$DEFAULT_SSL_VALIDITY}
 # Print all ENV variables
 echo ""
 echo "The following values are entered/selected:"
-echo "DNS hostname of you Linux instance $LINUX_DNS_HOSTNAME"
-echo "SAPSYSTEM Environment variable NAME: $SAPSYSTEM_URI_NAME"
-echo "SAPSYSTEM Environment variable VALUE: $SAPSYSTEM_URI_VALUE"
-echo "Active Control Container Image version: $AC_IMAGE_VERSION"
+echo "DNS hostname of you Linux instance:      $LINUX_DNS_HOSTNAME"
+echo "SAPSYSTEM Environment variable NAME:      $SAPSYSTEM_URI_NAME"
+echo "SAPSYSTEM Environment variable VALUE:     $SAPSYSTEM_URI_VALUE"
+echo "Active Control Container Image version:       $AC_IMAGE_VERSION"
 echo ""
 read -p "Prease ENTER to continue setup!?" WAIT
 
@@ -85,10 +85,11 @@ echo "Docker and Docker Compose successfully installed"
 sleep 2s
 docker -v
 docker compose version
+echo ""
 
 # SSL
 # Generation of private key and SSL certificate!
-echo "Generation of private key and SSL certificate!"
+echo "Starting generation of private key and SSL certificate!"
 sleep 2s
 mkdir ssl
 
@@ -101,14 +102,22 @@ openssl req -new -key "./ssl/$KEY_NAME" -out "./ssl/CertificateSigningRequest.cs
 # Generate and sing a self-signed certificate
 openssl x509 -req -in "./ssl/CertificateSigningRequest.csr" -signkey "./ssl/$KEY_NAME" -days $SSL_VALIDITY -out "./ssl/$CERTIFICATE_NAME"
  
-echo "Certificate and key generated:"
+echo "Private key and SSL certificate generated:"
 echo "Certificate (*.key): ./ssl/$CERTIFICATE_NAME"
 echo "Private Key (*.crt): ./ssl/$KEY_NAME"
 
+# Celanup
+rm ./
+get-docker.sh
 
+# End messages!?
+echo ""
+echo ""
 echo ""
 echo "Active Control Web Platform Setup completed!"
 echo "Thank you for your patience!"
 echo ""
+echo ""
 echo "To Active Control Web Platform container, please run: docker-compose up -f ac_webplatform.yml -d"
+echo ""
 read -p "Prease ENTER to finish setup!?" WAIT
