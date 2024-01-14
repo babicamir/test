@@ -87,7 +87,7 @@ sudo systemctl start docker.service
 echo ""
 echo "Docker and Docker Compose successfully installed"
 docker -v
-docker compose version
+docker-compose -v
 sleep 2s
 echo ""
 
@@ -106,6 +106,7 @@ openssl req -new -key "./ssl/$KEY_NAME" -out "./ssl/CertificateSigningRequest.cs
 # Generate and sing a self-signed certificate
 openssl x509 -req -in "./ssl/CertificateSigningRequest.csr" -signkey "./ssl/$KEY_NAME" -days $SSL_VALIDITY -out "./ssl/$CERTIFICATE_NAME"
  
+echo ""
 echo "Private key and SSL certificate generated:"
 echo "Certificate (*.key): ./ssl/$CERTIFICATE_NAME"
 echo "Private Key (*.crt): ./ssl/$KEY_NAME"
