@@ -5,11 +5,10 @@ version: "3.7"
 services:
   # ActiveControl Web Platform
   ac-webplatform:   
-    image: dockerregistry.basistechnologies.info/activecontrolgui:<AC-IMAGE-VERSION>      
+    image: dockerregistry.basistechnologies.info/activecontrolgui:<AC_IMAGE_VERSION>      
     container_name: ac_webplatform   
-    environment:   
-      - SAPSYSTEM_URI_<TO_CHANGE>=http://<DNS_or_IP>:<PORT>
-      #- SAPSYSTEM_SECURED_URI_<TO_CHANGE>=https://<DNS_or_IP>:<PORT>    #Use this ENV variable if you are using HTTPS to connect SAP AD
+    environment:
+      - <SAPSYSTEM_URI_NAME>=<SAPSYSTEM_URI_VALUE>
       - BTIWP_LOG_ENABLED=true
       - BTIWP_LOG_LEVEL=debug
       - BTIWP_LOG_OUTPUT=console
