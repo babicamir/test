@@ -38,9 +38,9 @@ SSL_VALIDITY=${SSL_VALIDITY:-$DEFAULT_SSL_VALIDITY}
 # Print all ENV variables
 echo ""
 echo "The following values are entered/selected:"
-echo "DNS hostname of you Linux instance:      $LINUX_DNS_HOSTNAME"
-echo "SAPSYSTEM Environment variable NAME:      $SAPSYSTEM_URI_NAME"
-echo "SAPSYSTEM Environment variable VALUE:     $SAPSYSTEM_URI_VALUE"
+echo "DNS hostname of you Linux instance:           $LINUX_DNS_HOSTNAME"
+echo "SAPSYSTEM Environment variable NAME:          $SAPSYSTEM_URI_NAME"
+echo "SAPSYSTEM Environment variable VALUE:         $SAPSYSTEM_URI_VALUE"
 echo "Active Control Container Image version:       $AC_IMAGE_VERSION"
 echo ""
 read -p "Prease ENTER to continue setup!?" WAIT
@@ -70,21 +70,25 @@ nginx.conf
 
 # Installing Docker and Docker Compose
 echo "Starting installation of Docker engine!"
-sleep 1s
+sleep 2s
 sudo curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
  
 echo "Starting installation of Docker Compose plugin!"
 DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
 mkdir -p $DOCKER_CONFIG/cli-plugins
-curl -SL https://github.com/docker/compose/releases/download/v2.23.3/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
-chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+sudo curl -SL https://github.com/docker/compose/releases/download/v2.23.3/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+sudo chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
 sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+sudo groupadd docker
+sudo usermod -aG docker $USER
+sudo systemctl enable docker.service
+sudo systemctl enable containerd.service
 
 echo "Docker and Docker Compose successfully installed"
-sleep 2s
 docker -v
 docker compose version
+sleep 2s
 echo ""
 
 # SSL
@@ -107,8 +111,7 @@ echo "Certificate (*.key): ./ssl/$CERTIFICATE_NAME"
 echo "Private Key (*.crt): ./ssl/$KEY_NAME"
 
 # Celanup
-rm ./
-get-docker.sh
+rm ./get-docker.sh
 
 # End messages!?
 echo ""
