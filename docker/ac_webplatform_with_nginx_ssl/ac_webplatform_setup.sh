@@ -75,10 +75,8 @@ sudo curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
  
 echo "Starting installation of Docker Compose plugin!"
-DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
-mkdir -p $DOCKER_CONFIG/cli-plugins
-sudo curl -SL https://github.com/docker/compose/releases/download/v2.23.3/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/docker-compose
-sudo chmod +x $DOCKER_CONFIG/docker-compose
+wget https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-linux-x86_64 -O /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 
 sudo groupadd docker
 sudo usermod -aG docker $USER
@@ -86,6 +84,7 @@ sudo systemctl enable docker.service
 sudo systemctl enable containerd.service
 sudo systemctl start docker.service
 
+echo ""
 echo "Docker and Docker Compose successfully installed"
 docker -v
 docker compose version
