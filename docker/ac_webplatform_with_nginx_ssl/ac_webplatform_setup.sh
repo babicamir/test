@@ -118,7 +118,7 @@ echo "Certificate (*.key): ./ssl/$CERTIFICATE_NAME"
 echo "Private Key (*.crt): ./ssl/$KEY_NAME"
 
 # Celanup
-sudo rm ./get-docker.sh
+rm ./get-docker.sh
 
 
 
