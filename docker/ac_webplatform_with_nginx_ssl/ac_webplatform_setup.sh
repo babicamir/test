@@ -118,6 +118,11 @@ echo "Private Key (*.crt): ./ssl/$KEY_NAME"
 # Celanup
 rm ./get-docker.sh
 
+sudo usermod -aG docker $USER
+getent group docker
+echo "break 1"
+
+
 # End messages!?
 echo ""
 echo ""
