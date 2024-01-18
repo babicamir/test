@@ -72,22 +72,23 @@ nginx.conf
 echo "Starting installation of Docker engine!"
 sleep 2s
 curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
+sh get-docker.sh
  
 echo "Starting installation of Docker Compose plugin!"
 wget https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-linux-x86_64 -O /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
 
 #groupadd docker
+all_users=$(awk -F: '$3 >= 1000 && $1 != "nobody" {print $1}' /etc/passwd)
 getent group docker
-usermod -aG docker $USER
+usermod -aG docker $all_users
 getent group docker
 echo "break 0"
 
 newgrp docker
-sudo systemctl enable docker.service
-sudo systemctl enable containerd.service
-sudo systemctl start docker.service
+systemctl enable docker.service
+systemctl enable containerd.service
+systemctl start docker.service
 
 echo ""
 echo "Docker and Docker Compose successfully installed"
