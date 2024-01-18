@@ -78,9 +78,9 @@ echo "Starting installation of Docker Compose plugin!"
 wget https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-linux-x86_64 -O /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
-groupadd docker
+#groupadd docker
 usermod -aG docker $USER
-#su - ${USER}
+su - ${USER}
 systemctl enable docker.service
 systemctl enable containerd.service
 systemctl start docker.service
