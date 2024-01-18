@@ -79,8 +79,10 @@ wget https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-
 chmod +x /usr/local/bin/docker-compose
 
 #groupadd docker
+getent group docker
 usermod -aG docker $USER
-su - ${USER} && exit
+getent group docker
+echo "break 0"
 
 systemctl enable docker.service
 systemctl enable containerd.service
