@@ -80,7 +80,8 @@ chmod +x /usr/local/bin/docker-compose
 
 #groupadd docker
 usermod -aG docker $USER
-#su - ${USER}
+su - ${USER} && exit
+
 systemctl enable docker.service
 systemctl enable containerd.service
 systemctl start docker.service
