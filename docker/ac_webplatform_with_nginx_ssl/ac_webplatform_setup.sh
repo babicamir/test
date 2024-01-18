@@ -80,7 +80,6 @@ chmod +x /usr/local/bin/docker-compose
 
 groupadd docker
 usermod -aG docker $USER
-usermod -aG docker $(whoami)
 su - ${USER}
 systemctl enable docker.service
 systemctl enable containerd.service
@@ -127,3 +126,4 @@ echo ""
 echo "To Active Control Web Platform container, please run: docker-compose up -f ac_webplatform.yml -d"
 echo ""
 read -p "Prease ENTER to finish setup!?" WAIT
+
