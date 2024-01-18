@@ -80,11 +80,7 @@ chmod +x /usr/local/bin/docker-compose
 
 #groupadd docker
 all_users=$(awk -F: '$3 >= 1000 && $1 != "nobody" {print $1}' /etc/passwd)
-getent group docker
 usermod -aG docker $all_users
-getent group docker
-echo "break 0"
-
 newgrp docker
 systemctl enable docker.service
 systemctl enable containerd.service
