@@ -81,6 +81,7 @@ chmod +x /usr/local/bin/docker-compose
 groupadd docker
 usermod -aG docker $USER
 usermod -aG docker $(whoami)
+su - ${USER}
 systemctl enable docker.service
 systemctl enable containerd.service
 systemctl start docker.service
