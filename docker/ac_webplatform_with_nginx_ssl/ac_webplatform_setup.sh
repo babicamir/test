@@ -122,6 +122,7 @@ sudo usermod -aG docker $USER
 getent group docker
 echo "break 1"
 
+newgrp docker
 
 # End messages!?
 echo ""

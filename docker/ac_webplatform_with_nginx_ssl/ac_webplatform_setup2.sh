@@ -4,6 +4,7 @@
 
 echo "0"
 getent group docker
-sh usermod -aG docker $USER
+sudo usermod -aG docker $USER
+newgrp docker
 echo "1"
 getent group docker
