@@ -74,9 +74,9 @@ sleep 2s
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
  
-sudo echo "Starting installation of Docker Compose plugin!"
-sudo wget https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-linux-x86_64 -O /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+# sudo echo "Starting installation of Docker Compose plugin!"
+# sudo wget https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-linux-x86_64 -O /usr/local/bin/docker-compose
+# sudo chmod +x /usr/local/bin/docker-compose
 
 #groupadd docker
 all_users=$(awk -F: '$3 >= 1000 && $1 != "nobody" {print $1}' /etc/passwd)
