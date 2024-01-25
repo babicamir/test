@@ -81,8 +81,6 @@ sudo chmod +x /usr/local/bin/docker-compose
 #groupadd docker
 all_users=$(awk -F: '$3 >= 1000 && $1 != "nobody" {print $1}' /etc/passwd)
 sudo usermod -aG docker $all_users
-newgrp docker
-exit
 
 sudo systemctl enable docker.service
 sudo systemctl enable containerd.service
@@ -132,3 +130,5 @@ echo "To Active Control Web Platform container, please run: docker-compose up -f
 echo ""
 read -p "Prease ENTER to finish setup!?" WAIT
 
+newgrp docker
+exit
