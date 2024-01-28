@@ -82,9 +82,11 @@ sudo chmod +x /usr/local/bin/docker-compose
 all_users=$(awk -F: '$3 >= 1000 && $1 != "nobody" {print $1}' /etc/passwd)
 sudo usermod -aG docker $all_users
 
-sudo systemctl enable docker.service
-sudo systemctl enable containerd.service
-sudo systemctl start docker.service
+sudo service docker start
+
+# sudo systemctl enable docker.service
+# sudo systemctl enable containerd.service
+# sudo systemctl start docker.service
 
 echo ""
 echo "Docker and Docker Compose successfully installed"
