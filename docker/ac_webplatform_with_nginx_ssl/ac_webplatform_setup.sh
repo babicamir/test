@@ -49,8 +49,8 @@ read -p "Prease ENTER to continue setup!?" WAIT
 # Downloading required templates!"
 echo "Downloading required templates!"
 sleep 2s
-wget https://raw.githubusercontent.com/babicamir/test/main/docker/ac_webplatform_with_nginx_ssl/ac_webplatform_template.yml -O ac_webplatform.yml
-wget https://raw.githubusercontent.com/babicamir/test/main/docker/ac_webplatform_with_nginx_ssl/nginx.conf
+curl https://raw.githubusercontent.com/babicamir/test/main/docker/ac_webplatform_with_nginx_ssl/ac_webplatform_template.yml -o ac_webplatform.yml
+curl https://raw.githubusercontent.com/babicamir/test/main/docker/ac_webplatform_with_nginx_ssl/nginx.conf -o nginx.conf
 
 # Updating templates with above ENV variables
 echo "Updating templates with above ENV variables!"
@@ -75,7 +75,7 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
  
 sudo echo "Starting installation of Docker Compose plugin!"
-sudo wget https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-linux-x86_64 -O /usr/local/bin/docker-compose
+sudo curl https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
 #groupadd docker

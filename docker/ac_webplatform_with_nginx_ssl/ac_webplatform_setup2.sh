@@ -71,66 +71,95 @@ nginx.conf
 # Installing Docker and Docker Compose
 echo "Starting installation of Docker engine!"
 sleep 2s
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
+
+
+
+
+get_distribution() {
+	lsb_dist=""
+	# Every system that we officially support has /etc/os-release
+	if [ -r /etc/os-release ]; then
+		lsb_dist="$(. /etc/os-release && echo "$ID")"
+	fi
+	# Returning an empty string here should be alright since the
+	# case statements don't act unless you provide an actual value
+	echo "$lsb_dist"
+}
+
+
+echo $lsb_dist
+
+a=a
+
+if [ $a == "a" ]; then
+    echo "Variable 'a'"
+elif [ $a == "b" ]; then
+    echo "Variable 'a' "
+else
+    echo "ostalo"
+fi
+
+
+# curl -fsSL https://get.docker.com -o get-docker.sh
+# sudo sh get-docker.sh
  
-sudo echo "Starting installation of Docker Compose plugin!"
-sudo curl https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+# sudo echo "Starting installation of Docker Compose plugin!"
+# sudo curl https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+# sudo chmod +x /usr/local/bin/docker-compose
 
-#groupadd docker
-all_users=$(awk -F: '$3 >= 1000 && $1 != "nobody" {print $1}' /etc/passwd)
-sudo usermod -aG docker $all_users
+# #groupadd docker
+# all_users=$(awk -F: '$3 >= 1000 && $1 != "nobody" {print $1}' /etc/passwd)
+# sudo usermod -aG docker $all_users
 
-sudo service docker start
+# sudo service docker start
 
-sudo systemctl enable docker.service
-sudo systemctl enable containerd.service
-sudo systemctl start docker.service
+# sudo systemctl enable docker.service
+# sudo systemctl enable containerd.service
+# sudo systemctl start docker.service
 
-echo ""
-echo "Docker and Docker Compose successfully installed"
-docker -v
-docker-compose -v
-sleep 2s
-echo ""
+# echo ""
+# echo "Docker and Docker Compose successfully installed"
+# docker -v
+# docker-compose -v
+# sleep 2s
+# echo ""
 
-# SSL
-# Generation of private key and SSL certificate!
-echo "Starting generation of private key and SSL certificate!"
-sleep 2s
-mkdir ssl
+# # SSL
+# # Generation of private key and SSL certificate!
+# echo "Starting generation of private key and SSL certificate!"
+# sleep 2s
+# mkdir ssl
 
-# Generate a Private Key
-openssl genrsa -out "./ssl/$KEY_NAME" 2048
+# # Generate a Private Key
+# openssl genrsa -out "./ssl/$KEY_NAME" 2048
  
-# Generate a CSR
-openssl req -new -key "./ssl/$KEY_NAME" -out "./ssl/CertificateSigningRequest.csr" -subj "/CN=$LINUX_DNS_HOSTNAME"
+# # Generate a CSR
+# openssl req -new -key "./ssl/$KEY_NAME" -out "./ssl/CertificateSigningRequest.csr" -subj "/CN=$LINUX_DNS_HOSTNAME"
 
-# Generate and sing a self-signed certificate
-openssl x509 -req -in "./ssl/CertificateSigningRequest.csr" -signkey "./ssl/$KEY_NAME" -days $SSL_VALIDITY -out "./ssl/$CERTIFICATE_NAME"
+# # Generate and sing a self-signed certificate
+# openssl x509 -req -in "./ssl/CertificateSigningRequest.csr" -signkey "./ssl/$KEY_NAME" -days $SSL_VALIDITY -out "./ssl/$CERTIFICATE_NAME"
  
-echo ""
-echo "Private key and SSL certificate generated:"
-echo "Certificate (*.key): ./ssl/$CERTIFICATE_NAME"
-echo "Private Key (*.crt): ./ssl/$KEY_NAME"
+# echo ""
+# echo "Private key and SSL certificate generated:"
+# echo "Certificate (*.key): ./ssl/$CERTIFICATE_NAME"
+# echo "Private Key (*.crt): ./ssl/$KEY_NAME"
 
-# Celanup
-sudo rm ./get-docker.sh
+# # Celanup
+# sudo rm ./get-docker.sh
 
 
 
-# End messages!?
-echo ""
-echo ""
-echo ""
-echo "Active Control Web Platform Setup completed!"
-echo "Thank you for your patience!"
-echo ""
-echo ""
-echo "To Active Control Web Platform container, please run: docker-compose up -f ac_webplatform.yml -d"
-echo ""
-read -p "Prease ENTER to finish setup!?" WAIT
+# # End messages!?
+# echo ""
+# echo ""
+# echo ""
+# echo "Active Control Web Platform Setup completed!"
+# echo "Thank you for your patience!"
+# echo ""
+# echo ""
+# echo "To Active Control Web Platform container, please run: docker-compose up -f ac_webplatform.yml -d"
+# echo ""
+# read -p "Prease ENTER to finish setup!?" WAIT
 
-newgrp docker
-exit
+# newgrp docker
+# exit
