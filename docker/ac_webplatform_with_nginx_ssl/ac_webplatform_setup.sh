@@ -11,6 +11,7 @@ CERTIFICATE_NAME="certificate.crt"
 # Intro message
 echo "Welcome to Active Control Web Platform Setup."
 echo "This script will install and configure docker, docker-compose, prepare docker compose YML manifest, generate Self Signed SSL certificate, and run the Active Control Web platform!"
+echo "This script is supported for the following Linux Distributions: Amazon Linux, Amazon Linux 2, Ubuntu 22, Ubuntu 20, Ubuntu 18, Suse 15, Suse 12, RedHat 9 and RedHat 8"
 echo ""
 echo "Please enter required information below!?"
 
@@ -68,28 +69,90 @@ sed -i \
 nginx.conf
  
 
-# Installing Docker and Docker Compose
 echo "Starting installation of Docker engine!"
 sleep 2s
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
+#Get Linux distribution ID
+if [ -e /etc/os-release ]; then
+    # Extract the ID variable from /etc/os-release using awk and cut
+    distribution_id=$(awk -F= '/^ID=/{gsub(/"/, "", $2); print $2}' /etc/os-release)    
+    # Display the distribution ID
+    echo "Distribution ID: $distribution_id"
+else
+    echo "Error: /etc/os-release file not found."
+fi
+
+# Install Docker
+if [ "$distribution_id" = "amzn" ]; then
+    echo "This is Amazon Linux distribution" 
+    sudo yum update -y
+    sudo yum install docker -y
+    sudo systemctl enable docker.service
+    sudo systemctl enable containerd.service
+    sudo systemctl start docker.service
+    sudo usermod -aG docker $USER
+
+    # Installing docker compose
+    sudo echo "Starting installation of Docker Compose plugin!"
+    sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+
+elif [ "$distribution_id" = "ubuntu" ]; then
+    echo "This is UBUNTU Linux distribution" 
+    curl -fsSL https://get.docker.com -o get-docker.sh
+    sudo sh get-docker.sh
+    sudo rm ./get-docker.sh
+
+    sudo systemctl enable docker.service
+    sudo systemctl enable containerd.service
+    sudo systemctl start docker.service
+    sudo usermod -aG docker $USER
+
+    # Installing docker compose
+    sudo echo "Starting installation of Docker Compose plugin!"
+    sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+    
+
+elif [ "$distribution_id" = "rhel" ]; then
+    echo "This is RedHat Linux distribution" 
+    sudo dnf update -y
+    sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+    sudo dnf install -y docker-ce docker-ce-cli containerd.io
+
+    sudo systemctl enable docker.service
+    sudo systemctl enable containerd.service
+    sudo systemctl start docker.service
+    sudo usermod -aG docker $USER
+
+    # Installing docker compose
+    sudo echo "Starting installation of Docker Compose plugin!"
+    sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose 
+
+elif [ "$distribution_id" = "sles" ]; then
+    echo "This is SUSE Linux distribution" 
+    sudo zypper addrepo https://download.docker.com/linux/sles/docker-ce.repo
+    sudo zypper install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+    sudo systemctl enable docker.service
+    sudo systemctl enable containerd.service
+    sudo systemctl start docker.service
+    sudo usermod -aG docker $USER
+
+    # Installing docker compose
+    sudo echo "Starting installation of Docker Compose plugin!"
+    sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose 
+
+else
+    echo "This Linux Distribution is not supported!?"
+fi
  
-sudo echo "Starting installation of Docker Compose plugin!"
-sudo curl https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
 
-#groupadd docker
-all_users=$(awk -F: '$3 >= 1000 && $1 != "nobody" {print $1}' /etc/passwd)
-sudo usermod -aG docker $all_users
-
-sudo service docker start
-
-sudo systemctl enable docker.service
-sudo systemctl enable containerd.service
-sudo systemctl start docker.service
-
-echo ""
+echo "##################################################################"
+echo "##################################################################"
 echo "Docker and Docker Compose successfully installed"
+echo "##################################################################"
 docker -v
 docker-compose -v
 sleep 2s
@@ -115,8 +178,6 @@ echo "Private key and SSL certificate generated:"
 echo "Certificate (*.key): ./ssl/$CERTIFICATE_NAME"
 echo "Private Key (*.crt): ./ssl/$KEY_NAME"
 
-# Celanup
-sudo rm ./get-docker.sh
 
 
 
