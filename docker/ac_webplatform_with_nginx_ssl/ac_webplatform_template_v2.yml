@@ -1,0 +1,46 @@
+# Basis Technologies ActiveControl Web Platform 
+# Docker-compose YML manifest
+version: "3.7"   
+
+services:
+  # ActiveControl Web Platform
+  ac-webplatform:   
+    image: dockerregistry.basistechnologies.info/activecontrolgui:<AC_IMAGE_VERSION>      
+    container_name: ac_webplatform   
+    environment:
+      - <SAPSYSTEM_URI_NAME>=<SAPSYSTEM_URI_VALUE>
+      - BTIWP_LOG_ENABLED=true
+      - BTIWP_LOG_LEVEL=debug
+      - BTIWP_LOG_OUTPUT=console
+      - PORT=9200
+      - NODE_TLS_REJECT_UNAUTHORIZED=1
+      - NODE_EXTRA_CA_CERTS=/ssl/RootCAcertificate.crt 
+    volumes:  
+      - ./ssl/RootCAcertificate.crt:/ssl/RootCAcertificate.crt 
+
+    networks:   
+      - ac-webplatform-net   
+    restart: unless-stopped   
+    labels:   
+      org.label-schema.group_all: "all"
+    ports:
+      - "9200"
+  # NGINX proxy
+  nginx:  
+    image: nginx:1.24.0  
+    container_name: nginx  
+    ports:  
+      - "80:80" 
+      - "443:443" 
+    networks:  
+      - ac-webplatform-net  
+    restart: unless-stopped  
+    volumes: 
+      - ./nginx.conf:/etc/nginx/nginx.conf 
+      - ./ssl/certificate.crt:/ssl/certificate.crt
+      - ./ssl/private.key:/ssl/private.key
+    labels:  
+      org.label-schema.group_all: "all"  
+
+networks:
+  ac-webplatform-net: 

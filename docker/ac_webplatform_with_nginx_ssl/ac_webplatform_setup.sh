@@ -2,11 +2,19 @@
 # Default values
 DEFAULT_LINUX_DNS_HOSTNAME=ac.example-company.net
 DEFAULT_AC_IMAGE_VERSION=ac910
-DEFAULT_SAPSYSTEM_URI_NAME=SAPSYSTEM_URI_T01
-DEFAULT_SAPSYSTEM_URI_VALUE=http://bti1121.bti.local.com:8020
+DEFAULT_SAPSYSTEM_SECURED_URI=yes
+DEFAULT_SAPSYSTEM_URI_NAME_v1=SAPSYSTEM_URI_T01
+DEFAULT_SAPSYSTEM_URI_NAME_v2=SAPSYSTEM_SECURED_URI_T01
+DEFAULT_SAPSYSTEM_URI_VALUE_v1=http://bti1121.bti.local.com:8020
+DEFAULT_SAPSYSTEM_URI_VALUE_v2=https://bti1121.bti.local.com:8020
+
 DEFAULT_SSL_VALIDITY=365 # in months
 KEY_NAME="private.key"
 CERTIFICATE_NAME="certificate.crt"
+
+
+
+
 
 # Intro message
 echo "Welcome to Active Control Web Platform Setup."
@@ -15,30 +23,61 @@ echo "This script is supported for the following Linux Distributions: Amazon Lin
 echo ""
 echo "Please enter required information below!?"
 
+
+
+
+
+ 
+
+
 # Get input ENV variables!?
-# LINUX_DNS_HOSTNAME
-read -p "Please enter DNS hostname of you Linux instance (default value: $DEFAULT_LINUX_DNS_HOSTNAME): " LINUX_DNS_HOSTNAME
-LINUX_DNS_HOSTNAME=${LINUX_DNS_HOSTNAME:-$DEFAULT_LINUX_DNS_HOSTNAME}
+# Usage of SAPSYSTEM_SECURED_URI
+read -p "Do you want to configure secure HTTPS connection between ActiveControl Web Platform container and SAP ActiveControl Domain Controller SICF [yes or no] (default value: $DEFAULT_SAPSYSTEM_SECURED_URI): " SAPSYSTEM_SECURED_URI 
+SAPSYSTEM_SECURED_URI=${SAPSYSTEM_SECURED_URI:-$DEFAULT_SAPSYSTEM_SECURED_URI}
 
 # SAPSYSTEM_URI_NAME
-read -p  "Please enter full SAPSYSTEM Environment variable NAME (default value: $DEFAULT_SAPSYSTEM_URI_NAME): " SAPSYSTEM_URI_NAME
-SAPSYSTEM_URI_NAME=${SAPSYSTEM_URI_NAME:-$DEFAULT_SAPSYSTEM_URI_NAME}
+if [ "$APSYSTEM_SECURED_URI" = "no" ]; then
+    # SAPSYSTEM_URI_NAME
+    read -p  "Please enter full SAPSYSTEM Environment variable VALUE (default value: $DEFAULT_SAPSYSTEM_URI_NAME_v1): " SAPSYSTEM_URI_NAME
+    SAPSYSTEM_URI_NAME=${SAPSYSTEM_URI_NAME:-$DEFAULT_SAPSYSTEM_URI_NAME_v1}
+else
+    # SAPSYSTEM_URI_NAME
+    read -p  "Please enter full SAPSYSTEM Environment variable VALUE (default value: $DEFAULT_SAPSYSTEM_URI_NAME_v2): " SAPSYSTEM_URI_NAME
+    SAPSYSTEM_URI_NAME=${SAPSYSTEM_URI_NAME:-$DEFAULT_SAPSYSTEM_URI_NAME_v2}
+fi
 
 # SAPSYSTEM_URI_VALUE
-read -p  "Please enter full SAPSYSTEM Environment variable VALUE (default value: $DEFAULT_SAPSYSTEM_URI_VALUE): " SAPSYSTEM_URI_VALUE
-SAPSYSTEM_URI_VALUE=${SAPSYSTEM_URI_VALUE:-$DEFAULT_SAPSYSTEM_URI_VALUE}
+if [ "$APSYSTEM_SECURED_URI" = "no" ]; then
+    # SAPSYSTEM_URI_VALUE
+    read -p  "Please enter full SAPSYSTEM Environment variable VALUE (default value: $DEFAULT_SAPSYSTEM_URI_VALUE_v1): " SAPSYSTEM_URI_VALUE
+    SAPSYSTEM_URI_VALUE=${SAPSYSTEM_URI_VALUE:-$DEFAULT_SAPSYSTEM_URI_VALUE_v1}
+else
+    # SAPSYSTEM_URI_NAME
+    read -p  "Please enter full SAPSYSTEM Environment variable VALUE (default value: $DEFAULT_SAPSYSTEM_URI_VALUE_v2): " SAPSYSTEM_URI_VALUE
+    SAPSYSTEM_URI_VALUE=${SAPSYSTEM_URI_VALUE:-$DEFAULT_SAPSYSTEM_URI_VALUE_v2}
+fi
 
 # AC_IMAGE_VERSION
 read -p "Please enter Active Control Container Image version (default value: $DEFAULT_AC_IMAGE_VERSION): " AC_IMAGE_VERSION
 AC_IMAGE_VERSION=${AC_IMAGE_VERSION:-$DEFAULT_AC_IMAGE_VERSION}
 
+# LINUX_DNS_HOSTNAME
+read -p "Please enter DNS hostname of you Linux instance (default value: $DEFAULT_LINUX_DNS_HOSTNAME): " LINUX_DNS_HOSTNAME
+LINUX_DNS_HOSTNAME=${LINUX_DNS_HOSTNAME:-$DEFAULT_LINUX_DNS_HOSTNAME}
+
+
 # SSL_VALIDITY
 read -p "How long do you want your SSL certificate to last? (default value: $DEFAULT_SSL_VALIDITY days): " SSL_VALIDITY
 SSL_VALIDITY=${SSL_VALIDITY:-$DEFAULT_SSL_VALIDITY}
 
+
+
+
+
 # Print all ENV variables
 echo ""
 echo "The following values are entered/selected:"
+echo "Usage of SAPSYSTEM_SECURED_URI:               $SAPSYSTEM_SECURED_URI"
 echo "DNS hostname of you Linux instance:           $LINUX_DNS_HOSTNAME"
 echo "SAPSYSTEM Environment variable NAME:          $SAPSYSTEM_URI_NAME"
 echo "SAPSYSTEM Environment variable VALUE:         $SAPSYSTEM_URI_VALUE"
@@ -52,6 +91,19 @@ echo "Downloading required templates!"
 sleep 2s
 curl https://raw.githubusercontent.com/babicamir/test/main/docker/ac_webplatform_with_nginx_ssl/ac_webplatform_template.yml -o ac_webplatform.yml
 curl https://raw.githubusercontent.com/babicamir/test/main/docker/ac_webplatform_with_nginx_ssl/nginx.conf -o nginx.conf
+
+
+
+# SAPSYSTEM_URI_NAME
+if [ "$APSYSTEM_SECURED_URI" = "no" ]; then
+    curl https://raw.githubusercontent.com/babicamir/test/main/docker/ac_webplatform_with_nginx_ssl/ac_webplatform_template_1.yml -o ac_webplatform.yml
+    curl https://raw.githubusercontent.com/babicamir/test/main/docker/ac_webplatform_with_nginx_ssl/nginx.conf -o nginx.conf
+else
+    curl https://raw.githubusercontent.com/babicamir/test/main/docker/ac_webplatform_with_nginx_ssl/ac_webplatform_template_2.yml -o ac_webplatform.yml
+    curl https://raw.githubusercontent.com/babicamir/test/main/docker/ac_webplatform_with_nginx_ssl/nginx.conf -o nginx.conf
+    touch ./ssl/RootCAcertificate.crt
+fi
+
 
 # Updating templates with above ENV variables
 echo "Updating templates with above ENV variables!"

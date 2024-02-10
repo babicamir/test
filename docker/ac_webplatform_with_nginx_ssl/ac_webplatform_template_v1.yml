@@ -12,7 +12,8 @@ services:
       - BTIWP_LOG_ENABLED=true
       - BTIWP_LOG_LEVEL=debug
       - BTIWP_LOG_OUTPUT=console
-      - PORT=9200 
+      - PORT=9200
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
     networks:   
       - ac-webplatform-net   
     restart: unless-stopped   
