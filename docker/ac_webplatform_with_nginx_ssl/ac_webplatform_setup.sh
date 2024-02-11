@@ -13,21 +13,12 @@ KEY_NAME="private.key"
 CERTIFICATE_NAME="certificate.crt"
 
 
-
-
-
 # Intro message
 echo "Welcome to Active Control Web Platform Setup."
 echo "This script will install and configure docker, docker-compose, prepare docker compose YML manifest, generate Self Signed SSL certificate, and run the Active Control Web platform!"
 echo "This script is supported for the following Linux Distributions: Amazon Linux, Amazon Linux 2, Ubuntu 22, Ubuntu 20, Ubuntu 18, Suse 15, Suse 12, RedHat 9 and RedHat 8"
 echo ""
 echo "Please enter required information below!?"
-
-
-
-
-
- 
 
 
 # Get input ENV variables!?
@@ -69,9 +60,6 @@ LINUX_DNS_HOSTNAME=${LINUX_DNS_HOSTNAME:-$DEFAULT_LINUX_DNS_HOSTNAME}
 # SSL_VALIDITY
 read -p "How long do you want your SSL certificate to last? (default value: $DEFAULT_SSL_VALIDITY days): " SSL_VALIDITY
 SSL_VALIDITY=${SSL_VALIDITY:-$DEFAULT_SSL_VALIDITY}
-
-
-
 
 
 # Print all ENV variables
@@ -223,8 +211,6 @@ echo ""
 echo "Private key and SSL certificate generated:"
 echo "Certificate (*.key): ./ssl/$CERTIFICATE_NAME"
 echo "Private Key (*.crt): ./ssl/$KEY_NAME"
-
-
 
 
 # End messages!?
