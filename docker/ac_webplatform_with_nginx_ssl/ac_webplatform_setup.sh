@@ -34,9 +34,9 @@ echo "Please enter required information below!?"
 # Usage of SAPSYSTEM_SECURED_URI
 read -p "Do you want to configure secure HTTPS connection between ActiveControl Web Platform container and SAP ActiveControl Domain Controller SICF [yes or no] (default value: $DEFAULT_SAPSYSTEM_SECURED_URI): " SAPSYSTEM_SECURED_URI 
 SAPSYSTEM_SECURED_URI=${SAPSYSTEM_SECURED_URI:-$DEFAULT_SAPSYSTEM_SECURED_URI}
-
+echo 
 # SAPSYSTEM_URI_NAME
-if [ "$APSYSTEM_SECURED_URI" = "no" ]; then
+if [ "$SAPSYSTEM_SECURED_URI" = "no" ]; then
     # SAPSYSTEM_URI_NAME
     read -p  "Please enter full SAPSYSTEM Environment variable VALUE (default value: $DEFAULT_SAPSYSTEM_URI_NAME_v1): " SAPSYSTEM_URI_NAME
     SAPSYSTEM_URI_NAME=${SAPSYSTEM_URI_NAME:-$DEFAULT_SAPSYSTEM_URI_NAME_v1}
@@ -47,7 +47,7 @@ else
 fi
 
 # SAPSYSTEM_URI_VALUE
-if [ "$APSYSTEM_SECURED_URI" = "no" ]; then
+if [ "$SAPSYSTEM_SECURED_URI" = "no" ]; then
     # SAPSYSTEM_URI_VALUE
     read -p  "Please enter full SAPSYSTEM Environment variable VALUE (default value: $DEFAULT_SAPSYSTEM_URI_VALUE_v1): " SAPSYSTEM_URI_VALUE
     SAPSYSTEM_URI_VALUE=${SAPSYSTEM_URI_VALUE:-$DEFAULT_SAPSYSTEM_URI_VALUE_v1}
@@ -84,22 +84,17 @@ echo "SAPSYSTEM Environment variable VALUE:         $SAPSYSTEM_URI_VALUE"
 echo "Active Control Container Image version:       $AC_IMAGE_VERSION"
 echo ""
 read -p "Prease ENTER to continue setup!?" WAIT
-
+mkdir ssl
 
 # Downloading required templates!"
 echo "Downloading required templates!"
 sleep 2s
-curl https://raw.githubusercontent.com/babicamir/test/main/docker/ac_webplatform_with_nginx_ssl/ac_webplatform_template.yml -o ac_webplatform.yml
-curl https://raw.githubusercontent.com/babicamir/test/main/docker/ac_webplatform_with_nginx_ssl/nginx.conf -o nginx.conf
-
-
-
 # SAPSYSTEM_URI_NAME
-if [ "$APSYSTEM_SECURED_URI" = "no" ]; then
-    curl https://raw.githubusercontent.com/babicamir/test/main/docker/ac_webplatform_with_nginx_ssl/ac_webplatform_template_1.yml -o ac_webplatform.yml
+if [ "$SAPSYSTEM_SECURED_URI" = "no" ]; then
+    curl https://raw.githubusercontent.com/babicamir/test/main/docker/ac_webplatform_with_nginx_ssl/ac_webplatform_template_v1.yml -o ac_webplatform.yml
     curl https://raw.githubusercontent.com/babicamir/test/main/docker/ac_webplatform_with_nginx_ssl/nginx.conf -o nginx.conf
 else
-    curl https://raw.githubusercontent.com/babicamir/test/main/docker/ac_webplatform_with_nginx_ssl/ac_webplatform_template_2.yml -o ac_webplatform.yml
+    curl https://raw.githubusercontent.com/babicamir/test/main/docker/ac_webplatform_with_nginx_ssl/ac_webplatform_template_v2.yml -o ac_webplatform.yml
     curl https://raw.githubusercontent.com/babicamir/test/main/docker/ac_webplatform_with_nginx_ssl/nginx.conf -o nginx.conf
     touch ./ssl/RootCAcertificate.crt
 fi
@@ -214,7 +209,6 @@ echo ""
 # Generation of private key and SSL certificate!
 echo "Starting generation of private key and SSL certificate!"
 sleep 2s
-mkdir ssl
 
 # Generate a Private Key
 openssl genrsa -out "./ssl/$KEY_NAME" 2048
@@ -234,16 +228,38 @@ echo "Private Key (*.crt): ./ssl/$KEY_NAME"
 
 
 # End messages!?
-echo ""
-echo ""
-echo ""
-echo "Active Control Web Platform Setup completed!"
-echo "Thank you for your patience!"
-echo ""
-echo ""
-echo "To Active Control Web Platform container, please run: docker-compose up -f ac_webplatform.yml -d"
-echo ""
-read -p "Prease ENTER to finish setup!?" WAIT
+if [ "$SAPSYSTEM_SECURED_URI" = "no" ]; then
+    echo ""
+    echo ""
+    echo ""
+    echo "Active Control Web Platform Setup completed!"
+    echo "Thank you for your patience!"
+    echo ""
+    echo ""
+    echo "To Active Control Web Platform container, please run: docker-compose up -f ac_webplatform.yml -d"
+    echo ""
+    read -p "Prease ENTER to finish setup!?" WAIT
+else
+    echo ""
+    echo ""
+    echo ""
+    echo "Active Control Web Platform Setup completed!"
+    echo "Thank you for your patience!"
+    echo ""
+    echo ""
+    echo ""
+    echo "#########   I M P O R T A N T     ##############################"
+    echo ""
+    echo "Please import/populate the certificate for SAP ActiveControl Domain Controller SICF, within ./ssl/RootCAcertificate.crt file!"
+    echo ""
+    echo "#########   I M P O R T A N T     ##############################"   
+    echo ""
+    echo ""
+    echo ""
+    echo "To Active Control Web Platform container, please run: docker-compose up -f ac_webplatform.yml -d"
+    echo ""
+    read -p "Prease ENTER to finish setup!?" WAIT
+fi
 
 newgrp docker
 exit
